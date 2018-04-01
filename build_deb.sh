@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-pkg_name="PAKAGE_NAME"
+pkg_name="PKG_NAME"
 bin_file="BIN_FILE"
 src_path="${bin_file}-linux-x64";
 read Version < $src_path/version
@@ -30,14 +30,22 @@ echo "#!/bin/sh
 	Exec=/usr/local/bin/app-${pkg_name}/${src_path}/${bin_file}
 	Terminal=false
 	Type=Application
-	Icon=/usr/local/bin/app-${pkg_name}/${src_path}/fav.png
+	Icon=/usr/local/bin/app-${pkg_name}/${src_path}/resources/app/fav.png
 	Path=
 	Categories=app
 	NoDisplay=false
-	\" > \"\$(xdg-user-dir DESKTOP)/$pkg_name.desktop\"
+	\" > \"$HOME/.local/share/applications/$pkg_name.desktop\"
+
+	chmod 0777 /usr/local/bin/app-${pkg_name}/${src_path}/resources/app/configs/pass.json
 " > "$pkg_name_deb/postinst"
 
 chmod 0755 "$pkg_name_deb/postinst"
+
+echo "#!/bin/sh
+ rm \"$HOME/.local/share/applications/$pkg_name.desktop\"
+" > "$pkg_name_deb/postrm"
+
+chmod 0755 "$pkg_name_deb/postrm"
 
 echo "#!/bin/sh \n ./app_${pkg_name}/${src_path}/${bin_file}" > "${pkg_name}/usr/local/bin/${pkg_name}"
 
